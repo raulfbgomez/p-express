@@ -1,10 +1,18 @@
 const express = require('express')
 const router = express.Router()
 
-const products = require('../utils/mocks/products')
+// Mandamos a llamar a nuestro servicio de productos
+const ProductsService = require('../services/product')
+const productService = new ProductsService()
 
-router.get('/', function(req, res) {
-  res.render('products', { products })
+router.get('/', async function(req, res, next) {
+  const { tags } = req.query
+  try {
+    const products = await productService.getProducts({ tags })
+    res.render('products', { products })
+  } catch(err) {
+    next(err)
+  }
 })
 
 
