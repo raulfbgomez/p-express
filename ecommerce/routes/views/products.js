@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 // Mandamos a llamar a nuestro servicio de productos
-const ProductsService = require('../services/product')
+const ProductsService = require('../../services/product')
 const productService = new ProductsService()
 
 router.get('/', async function(req, res, next) {
