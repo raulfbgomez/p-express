@@ -3,6 +3,7 @@ const path = require('path')
 
 const productsRouter = require('./routes/views/products')
 const productsApiRouter = require('./routes/api/products')
+const { logErrors, clientErrorHandler, errorHandler } = require('./utils/middlewares/errorsHanlders')
 
 // App init
 const app = express()
@@ -23,6 +24,11 @@ app.get('/', function(req, res) { // route handler tambien llamado middleware
 })
 app.use('/products', productsRouter)
 app.use('/api/products', productsApiRouter)
+
+// Los middlewares de error siempre deben ir al final de las rutas
+app.use(logErrors)
+app.use(clientErrorHandler)
+app.use(errorHandler)
 
 // Server init
 const server = app.listen(8000, function() {
