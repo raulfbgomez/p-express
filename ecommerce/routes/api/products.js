@@ -5,6 +5,15 @@ const router = express.Router()
 const ProductsService = require('../../services/product')
 const productService = new ProductsService()
 
+const validation = require('../../utils/middleware/validationHandler')
+// Traemos los schemas creados con @Hapi/Joi
+const { 
+  productIdSchema, 
+  productTagSchema, 
+  createProductSchema, 
+  updateProductSchema 
+} = require('../../utils/schemas/products')
+
 router.get('/', async function(req, res, next) {
   const { tags } = req.query
   try {
@@ -34,7 +43,7 @@ router.get('/:productId', async function(req, res, next) {
   }
 })
 
-router.post('/', async function(req, res, next) {
+router.post('/', validation(createProductSchema), async function(req, res, next) {
   const { body: product } = req
   try {
     const newProduct = await productService.createProduct({ product })
@@ -48,19 +57,22 @@ router.post('/', async function(req, res, next) {
   }
 })
 
-router.put('/:productId', async function(req, res, next) {
-  const { productId } = req.params
-  const { body: product } = req
-  try{
-    const newProduct = await productService.updateProduct({ productId, product })
-  
-    res.status(200).json({
-      data: newProduct,
-      message: 'product updated'
-    })
-  } catch(err) {
-    next(err)
-  }
+router.put('/:productId', 
+  validation(productIdSchema, "params"),
+  validation(updateProductSchema), 
+  async function(req, res, next) {
+    const { productId } = req.params
+    const { body: product } = req
+    try{
+      const newProduct = await productService.updateProduct({ productId, product })
+    
+      res.status(200).json({
+        data: newProduct,
+        message: 'product updated'
+      })
+    } catch(err) {
+      next(err)
+    }
 })
 
 router.delete('/:productId', async function(req, res, next) {

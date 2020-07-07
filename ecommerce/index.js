@@ -3,7 +3,7 @@ const path = require('path')
 
 const productsRouter = require('./routes/views/products')
 const productsApiRouter = require('./routes/api/products')
-const { logErrors, clientErrorHandler, errorHandler } = require('./utils/middlewares/errorsHanlders')
+const { logErrors, clientErrorHandler, errorHandler } = require('./utils/middleware/errorsHanlders')
 
 // App init
 const app = express()
