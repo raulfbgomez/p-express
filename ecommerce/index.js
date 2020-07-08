@@ -4,6 +4,8 @@ const boom = require('@hapi/boom')
 
 const productsRouter = require('./routes/views/products')
 const productsApiRouter = require('./routes/api/products')
+const authApiRouter = require('./routes/api/auth')
+
 const { logErrors, wrapErrors, clientErrorHandler, errorHandler } = require('./utils/middleware/errorsHanlders')
 const isRequestAjaxOrApi = require('./utils/isRequestAjaxOrApi')
 
@@ -26,6 +28,7 @@ app.get('/', function(req, res) { // route handler tambien llamado middleware
 })
 app.use('/products', productsRouter)
 app.use('/api/products', productsApiRouter)
+app.use('/api/auth', authApiRouter)
 
 // El ultimo middleware es interpretado por express porque no encontro ninguna ruta
 app.use(function(req, res, next) {
