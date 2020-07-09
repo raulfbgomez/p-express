@@ -1,4 +1,5 @@
 const express = require('express')
+const passport = require('passport')
 const router = express.Router()
 
 // Mandamos a llamar a nuestro servicio de productos
@@ -13,6 +14,9 @@ const {
   createProductSchema, 
   updateProductSchema 
 } = require('../../utils/schemas/products')
+
+// JWT Strategy
+require('../../utils/auth/strategies/jwt')
 
 router.get('/', async function(req, res, next) {
   const { tags } = req.query
@@ -57,7 +61,8 @@ router.post('/', validation(createProductSchema), async function(req, res, next)
   }
 })
 
-router.put('/:productId', 
+router.put('/:productId',
+  passport.authenticate('jwt', { session: false }), // Middleware para que solo se pueda acceder a esta ruta con un access token
   validation(productIdSchema, "params"),
   validation(updateProductSchema), 
   async function(req, res, next) {
@@ -75,18 +80,20 @@ router.put('/:productId',
     }
 })
 
-router.delete('/:productId', async function(req, res, next) {
-  const { productId } = req.params
-  try {
-    const product = await productService.deleteProduct({ productId })
-  
-    res.status(200).json({
-      data: product,
-      message: 'product deleted'
-    })
-  } catch (err) {
-    next(err)
-  }
+router.delete('/:productId', 
+  passport.authenticate('jwt', { session: false }), // Middleware para que solo se pueda acceder a esta ruta con un access token
+  async function(req, res, next) {
+    const { productId } = req.params
+    try {
+      const product = await productService.deleteProduct({ productId })
+    
+      res.status(200).json({
+        data: product,
+        message: 'product deleted'
+      })
+    } catch (err) {
+      next(err)
+    }
 })
 
 
