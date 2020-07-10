@@ -27,7 +27,8 @@ app.get('/', function(req, res) { // route handler tambien llamado middleware
   res.redirect('/products') // redirect to products url
 })
 app.use('/products', productsRouter)
-app.use('/api/products', productsApiRouter)
+// app.use('/api/products', productsApiRouter)
+productsApiRouter(app) // Inversion de control para los test
 app.use('/api/auth', authApiRouter)
 
 // El ultimo middleware es interpretado por express porque no encontro ninguna ruta
